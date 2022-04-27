@@ -1,9 +1,9 @@
-﻿using LuckyGame.Web.Application.Model;
-using LuckyGame.Web.Application.Service;
+﻿using LuckyGame.ApplicationLogic.Model;
+using LuckyGame.ApplicationLogic.Services;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace LuckyGame.Web.Tests;
+namespace LuckyGame.ApplicationLogic.Tests;
 
 public class RoomDispatcherTests
 {

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using LuckyGame.GameLogic.Events;
 using Microsoft.AspNetCore.SignalR.Client;
 using Xunit;
 using Xunit.Abstractions;
@@ -59,8 +60,13 @@ public class PlayingRoomHubTests
 
         connection1.On(Hubs.PlayingRoomHub.MethodWait, () => _testOutputHelper.WriteLine("1: On wait"));
         connection1.On(Hubs.PlayingRoomHub.MethodStart, () => _testOutputHelper.WriteLine("1: On start"));
-        connection1.On(Hubs.PlayingRoomHub.MethodRound, () => _testOutputHelper.WriteLine("1: On round"));
-        connection1.On(Hubs.PlayingRoomHub.MethodGameOver, () => _testOutputHelper.WriteLine("1: On game over"));
+        connection1.On<RoundResultsEventArgs>(
+            Hubs.PlayingRoomHub.MethodRound,
+            round => _testOutputHelper.WriteLine(
+                $"1: On round: {round.Player1HealthChange} {round.Player2HealthChange}"));
+        connection1.On<GameOverEventArgs>(
+            Hubs.PlayingRoomHub.MethodGameOver,
+            gameOver => _testOutputHelper.WriteLine($"1: Winner: {gameOver.Winner.Name}"));
         connection1.On(Hubs.PlayingRoomHub.MethodFull, () => _testOutputHelper.WriteLine("1: On full"));
 
         connection2.On(Hubs.PlayingRoomHub.MethodWait, () => _testOutputHelper.WriteLine("2: On wait"));
@@ -88,7 +94,7 @@ public class PlayingRoomHubTests
         await Task.WhenAll(t1, t2, t3);
 
         // wait for the response
-        await Task.Delay(TimeSpan.FromSeconds(5));
+        await Task.Delay(TimeSpan.FromSeconds(1));
 
         Assert.True(hasResponse);
     }

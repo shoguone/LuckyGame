@@ -4,6 +4,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyGame.Web", "LuckyGame.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyGame.Web.Tests", "LuckyGame.Web.Tests\LuckyGame.Web.Tests.csproj", "{8AACC137-9398-4B2C-9E29-152FE10B17E2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyGame.GameLogic", "LuckyGame.GameLogic\LuckyGame.GameLogic.csproj", "{4B4D5245-412C-447D-96A6-C93A5680C487}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyGame.ApplicationLogic", "LuckyGame.ApplicationLogic\LuckyGame.ApplicationLogic.csproj", "{956AE9CB-0A18-457B-99EE-6DAD964929FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyGame.GameLogic.Tests", "LuckyGame.GameLogic.Tests\LuckyGame.GameLogic.Tests.csproj", "{BB469D67-7530-483A-9B06-FAD8C3401BCC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{69DECE33-7384-4F3E-B9B3-B45C9BDECE21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyGame.ApplicationLogic.Tests", "LuckyGame.ApplicationLogic.Tests\LuckyGame.ApplicationLogic.Tests.csproj", "{AF433646-3667-49CC-AF70-1E1146B85F04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +28,26 @@ Global
 		{8AACC137-9398-4B2C-9E29-152FE10B17E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AACC137-9398-4B2C-9E29-152FE10B17E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AACC137-9398-4B2C-9E29-152FE10B17E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B4D5245-412C-447D-96A6-C93A5680C487}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B4D5245-412C-447D-96A6-C93A5680C487}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B4D5245-412C-447D-96A6-C93A5680C487}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B4D5245-412C-447D-96A6-C93A5680C487}.Release|Any CPU.Build.0 = Release|Any CPU
+		{956AE9CB-0A18-457B-99EE-6DAD964929FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{956AE9CB-0A18-457B-99EE-6DAD964929FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{956AE9CB-0A18-457B-99EE-6DAD964929FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{956AE9CB-0A18-457B-99EE-6DAD964929FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB469D67-7530-483A-9B06-FAD8C3401BCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB469D67-7530-483A-9B06-FAD8C3401BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB469D67-7530-483A-9B06-FAD8C3401BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB469D67-7530-483A-9B06-FAD8C3401BCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF433646-3667-49CC-AF70-1E1146B85F04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF433646-3667-49CC-AF70-1E1146B85F04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF433646-3667-49CC-AF70-1E1146B85F04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF433646-3667-49CC-AF70-1E1146B85F04}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BB469D67-7530-483A-9B06-FAD8C3401BCC} = {69DECE33-7384-4F3E-B9B3-B45C9BDECE21}
+		{8AACC137-9398-4B2C-9E29-152FE10B17E2} = {69DECE33-7384-4F3E-B9B3-B45C9BDECE21}
+		{AF433646-3667-49CC-AF70-1E1146B85F04} = {69DECE33-7384-4F3E-B9B3-B45C9BDECE21}
 	EndGlobalSection
 EndGlobal

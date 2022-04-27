@@ -1,5 +1,7 @@
-﻿using LuckyGame.Web.Application.Interfaces;
-using LuckyGame.Web.Application.Model;
+﻿using LuckyGame.ApplicationLogic.Interfaces;
+using LuckyGame.ApplicationLogic.Model;
+using LuckyGame.GameLogic.Events;
+using LuckyGame.GameLogic.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
 namespace LuckyGame.Web.Hubs;
@@ -14,11 +16,16 @@ public class PlayingRoomHub : Hub
 
     private readonly IRoomDispatcher _roomDispatcher;
     private readonly ILogger<PlayingRoomHub> _logger;
+    private readonly IServiceProvider _serviceProvider;
 
-    public PlayingRoomHub(IRoomDispatcher roomDispatcher, ILogger<PlayingRoomHub> logger)
+    public PlayingRoomHub(
+        IRoomDispatcher roomDispatcher,
+        ILogger<PlayingRoomHub> logger,
+        IServiceProvider serviceProvider)
     {
         _roomDispatcher = roomDispatcher;
         _logger = logger;
+        _serviceProvider = serviceProvider;
     }
     
     public async Task Connect(string playerName)
@@ -39,11 +46,40 @@ public class PlayingRoomHub : Hub
                 break;
             case RoomStatus.Start:
                 await SendStart();
-                await Task.Delay(TimeSpan.FromSeconds(1));
-                await SendRound();
-                await SendGameOver();
+                var gameMasterFactory = _serviceProvider.GetService<IGameMasterFactory>();
+                if (gameMasterFactory == null)
+                {
+                    throw new NullReferenceException(nameof(gameMasterFactory));
+                }
 
-                _roomDispatcher.ResetRoom();
+                var (client1Name, client2Name) = _roomDispatcher.GetClientNames();
+                var gameMaster = gameMasterFactory.CreateGameMaster(client1Name, client2Name);
+
+                var cts = new CancellationTokenSource();
+                var cancellationToken = cts.Token;
+
+                gameMaster.OnRound += async (sender, args) =>
+                {
+                    await SendRound(args);
+                };
+                gameMaster.OnGameOver += async (sender, args) =>
+                {
+                    await SendGameOver(args);
+                    
+                    // TODO : store results to the db
+                    
+                    _roomDispatcher.ResetRoom();
+                    cts.Cancel();
+                };
+
+                gameMaster.StartGame();
+
+                // prevent Hub from disposing before the game is over
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(roomStatus), roomStatus, $"No such {nameof(RoomStatus)}");
@@ -69,17 +105,17 @@ public class PlayingRoomHub : Hub
         await Clients.Clients(clientIds).SendAsync(MethodStart);
     }
 
-    private async Task SendRound()
+    private async Task SendRound(RoundResultsEventArgs args)
     {
         var clientIds = _roomDispatcher.GetClientIds();
         _logger.LogDebug("sending round to {ClientIds}", clientIds);
-        await Clients.Clients(clientIds).SendAsync(MethodRound);
+        await Clients.Clients(clientIds).SendAsync(MethodRound, args);
     }
 
-    private async Task SendGameOver()
+    private async Task SendGameOver(GameOverEventArgs args)
     {
         var clientIds = _roomDispatcher.GetClientIds();
         _logger.LogDebug("sending game over to {ClientIds}", clientIds);
-        await Clients.Clients(clientIds).SendAsync(MethodGameOver);
+        await Clients.Clients(clientIds).SendAsync(MethodGameOver, args);
     }
 }

@@ -1,7 +1,7 @@
-﻿using LuckyGame.Web.Application.Interfaces;
-using LuckyGame.Web.Application.Model;
+﻿using LuckyGame.ApplicationLogic.Interfaces;
+using LuckyGame.ApplicationLogic.Model;
 
-namespace LuckyGame.Web.Application.Service;
+namespace LuckyGame.ApplicationLogic.Services;
 
 public class RoomDispatcher : IRoomDispatcher
 {
@@ -27,6 +27,21 @@ public class RoomDispatcher : IRoomDispatcher
         }
 
         return list;
+    }
+
+    public (string, string) GetClientNames()
+    {
+        if (_room.Client1?.Name == null)
+        {
+            throw new NullReferenceException(nameof(Room.Client1.Name));
+        }
+
+        if (_room.Client2?.Name == null)
+        {
+            throw new NullReferenceException(nameof(Room.Client2.Name));
+        }
+
+        return (_room.Client1.Name, _room.Client2.Name);
     }
 
     public RoomStatus JoinRoom(Client client)

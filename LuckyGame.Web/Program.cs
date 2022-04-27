@@ -1,5 +1,7 @@
-using LuckyGame.Web.Application.Interfaces;
-using LuckyGame.Web.Application.Service;
+using LuckyGame.ApplicationLogic.Interfaces;
+using LuckyGame.ApplicationLogic.Services;
+using LuckyGame.GameLogic.Interfaces;
+using LuckyGame.GameLogic.Services;
 using LuckyGame.Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +9,7 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 // Domain
-// not yet
+builder.Services.AddScoped<IGameMasterFactory, GameMasterFactory>();
 
 // Infrastructure
 // not yet

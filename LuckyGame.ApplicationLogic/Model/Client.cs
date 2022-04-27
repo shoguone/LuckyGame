@@ -1,4 +1,4 @@
-﻿namespace LuckyGame.Web.Application.Model;
+﻿namespace LuckyGame.ApplicationLogic.Model;
 
 public class Client
 {
