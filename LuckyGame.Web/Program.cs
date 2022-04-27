@@ -1,6 +1,10 @@
+using LuckyGame.Web.Application.Interfaces;
+using LuckyGame.Web.Application.Service;
 using LuckyGame.Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 // Domain
 // not yet
@@ -9,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // not yet
 
 // Application
-// not yet
+builder.Services.AddSingleton<IRoomDispatcher, RoomDispatcher>();
 
 // Frameworks
 builder.Services.AddSignalR();
