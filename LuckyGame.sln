@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyGame.Web", "LuckyGame.Web\LuckyGame.Web.csproj", "{F855F5DC-A920-43DF-B75B-8CD924898563}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyGame.Web.Tests", "LuckyGame.Web.Tests\LuckyGame.Web.Tests.csproj", "{8AACC137-9398-4B2C-9E29-152FE10B17E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{F855F5DC-A920-43DF-B75B-8CD924898563}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F855F5DC-A920-43DF-B75B-8CD924898563}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F855F5DC-A920-43DF-B75B-8CD924898563}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AACC137-9398-4B2C-9E29-152FE10B17E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AACC137-9398-4B2C-9E29-152FE10B17E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AACC137-9398-4B2C-9E29-152FE10B17E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AACC137-9398-4B2C-9E29-152FE10B17E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
