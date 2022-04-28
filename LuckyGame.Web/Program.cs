@@ -1,8 +1,11 @@
 using LuckyGame.ApplicationLogic.Interfaces;
 using LuckyGame.ApplicationLogic.Services;
+using LuckyGame.DataAccess.Context;
+using LuckyGame.DataAccess.DomainServices;
 using LuckyGame.GameLogic.Interfaces;
 using LuckyGame.GameLogic.Services;
 using LuckyGame.Web.Hubs;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -10,9 +13,11 @@ builder.Logging.AddConsole();
 
 // Domain
 builder.Services.AddScoped<IGameMasterFactory, GameMasterFactory>();
+builder.Services.AddScoped<IMatchHistoryService, MatchHistoryService>();
 
 // Infrastructure
-// not yet
+builder.Services.AddDbContext<IDbContext, InMemoryDbContext>(options =>
+    options.UseInMemoryDatabase("in-memory-db"));
 
 // Application
 builder.Services.AddSingleton<IRoomDispatcher, RoomDispatcher>();

@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LuckyGame.ApplicationLogic\LuckyGame.ApplicationLogic.csproj" />
+      <ProjectReference Include="..\LuckyGame.DataAccess\LuckyGame.DataAccess.csproj" />
       <ProjectReference Include="..\LuckyGame.GameLogic\LuckyGame.GameLogic.csproj" />
     </ItemGroup>
 

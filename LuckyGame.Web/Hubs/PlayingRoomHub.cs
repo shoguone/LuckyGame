@@ -1,5 +1,7 @@
 ﻿using LuckyGame.ApplicationLogic.Interfaces;
 using LuckyGame.ApplicationLogic.Model;
+using LuckyGame.DataAccess.DomainServices;
+using LuckyGame.DataAccess.Entities;
 using LuckyGame.GameLogic.Events;
 using LuckyGame.GameLogic.Interfaces;
 using Microsoft.AspNetCore.SignalR;
@@ -17,15 +19,18 @@ public class PlayingRoomHub : Hub
     private readonly IRoomDispatcher _roomDispatcher;
     private readonly ILogger<PlayingRoomHub> _logger;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IMatchHistoryService _matchHistoryService;
 
     public PlayingRoomHub(
         IRoomDispatcher roomDispatcher,
         ILogger<PlayingRoomHub> logger,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        IMatchHistoryService matchHistoryService)
     {
         _roomDispatcher = roomDispatcher;
         _logger = logger;
         _serviceProvider = serviceProvider;
+        _matchHistoryService = matchHistoryService;
     }
     
     public async Task Connect(string playerName)
@@ -58,15 +63,21 @@ public class PlayingRoomHub : Hub
                 var cts = new CancellationTokenSource();
                 var cancellationToken = cts.Token;
 
-                gameMaster.OnRound += async (sender, args) =>
+                gameMaster.OnRound += async (_, args) =>
                 {
                     await SendRound(args);
                 };
-                gameMaster.OnGameOver += async (sender, args) =>
+                gameMaster.OnGameOver += async (_, args) =>
                 {
                     await SendGameOver(args);
-                    
-                    // TODO : store results to the db
+
+                    await _matchHistoryService.StoreMatchHistory(new MatchHistory
+                    {
+                        WinnerName = args.Winner.Name,
+                        LoserName = args.Loser.Name,
+                        WinnerScore = args.Winner.Health,
+                        LoserScore = args.Loser.Health,
+                    });
                     
                     _roomDispatcher.ResetRoom();
                     cts.Cancel();
