@@ -1,9 +1,8 @@
-﻿using LuckyGame.ApplicationLogic.Interfaces;
+﻿using MediatR;
+using LuckyGame.ApplicationLogic.Interfaces;
 using LuckyGame.ApplicationLogic.Model;
-using LuckyGame.DataAccess.DomainServices;
-using LuckyGame.DataAccess.Entities;
 using LuckyGame.GameLogic.Events;
-using LuckyGame.GameLogic.Interfaces;
+using LuckyGame.UseCases.ConnectToRoom;
 using Microsoft.AspNetCore.SignalR;
 
 namespace LuckyGame.Web.Hubs;
@@ -18,19 +17,16 @@ public class PlayingRoomHub : Hub
 
     private readonly IRoomDispatcher _roomDispatcher;
     private readonly ILogger<PlayingRoomHub> _logger;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IMatchHistoryService _matchHistoryService;
+    private readonly ISender _sender;
 
     public PlayingRoomHub(
         IRoomDispatcher roomDispatcher,
         ILogger<PlayingRoomHub> logger,
-        IServiceProvider serviceProvider,
-        IMatchHistoryService matchHistoryService)
+        ISender sender)
     {
         _roomDispatcher = roomDispatcher;
         _logger = logger;
-        _serviceProvider = serviceProvider;
-        _matchHistoryService = matchHistoryService;
+        _sender = sender;
     }
     
     public async Task Connect(string playerName)
@@ -40,61 +36,13 @@ public class PlayingRoomHub : Hub
             Context.ConnectionId, playerName);
         
         var client = new Client(Context.ConnectionId, playerName);
-        var roomStatus = _roomDispatcher.JoinRoom(client);
-        switch (roomStatus)
-        {
-            case RoomStatus.Wait:
-                await SendWait();
-                break;
-            case RoomStatus.Full:
-                await SendFull();
-                break;
-            case RoomStatus.Start:
-                await SendStart();
-                var gameMasterFactory = _serviceProvider.GetService<IGameMasterFactory>();
-                if (gameMasterFactory == null)
-                {
-                    throw new NullReferenceException(nameof(gameMasterFactory));
-                }
-
-                var (client1Name, client2Name) = _roomDispatcher.GetClientNames();
-                var gameMaster = gameMasterFactory.CreateGameMaster(client1Name, client2Name);
-
-                var cts = new CancellationTokenSource();
-                var cancellationToken = cts.Token;
-
-                gameMaster.OnRound += async (_, args) =>
-                {
-                    await SendRound(args);
-                };
-                gameMaster.OnGameOver += async (_, args) =>
-                {
-                    await SendGameOver(args);
-
-                    await _matchHistoryService.StoreMatchHistory(new MatchHistory
-                    {
-                        WinnerName = args.Winner.Name,
-                        LoserName = args.Loser.Name,
-                        WinnerScore = args.Winner.Health,
-                        LoserScore = args.Loser.Health,
-                    });
-                    
-                    _roomDispatcher.ResetRoom();
-                    cts.Cancel();
-                };
-
-                gameMaster.StartGame();
-
-                // prevent Hub from disposing before the game is over
-                while (!cancellationToken.IsCancellationRequested)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-                }
-
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(roomStatus), roomStatus, $"No such {nameof(RoomStatus)}");
-        }
+        var _ = await _sender.Send(new ConnectToRoomCommand(
+            client,
+            SendWait,
+            SendFull,
+            SendStart,
+            SendRound,
+            SendGameOver));
     }
     
     private async Task SendWait()
